@@ -33,7 +33,7 @@ builder.Services.AddScoped<UserService>();
 builder.Services.AddScoped<GoogleAuthenticationService>();
 builder.Services.AddScoped<AutoServiceService>();
 builder.Services.AddScoped<IJwtUtils, JwtUtils>();
-
+builder.Services.AddCors();
 // builder.Services.AddAuthentication(x =>
 //     {
 //         x.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -71,11 +71,13 @@ builder.Services.AddScoped<IJwtUtils, JwtUtils>();
 
 var app = builder.Build();
 
-if (app.Environment.IsDevelopment())
-{
-    app.UseSwagger();
-    app.UseSwaggerUI();
-}
+app.UseSwagger();
+app.UseSwaggerUI();
+
+app.UseCors(x => x
+    .AllowAnyOrigin()
+    .AllowAnyMethod()
+    .AllowAnyHeader());
 
 app.UseHttpsRedirection();
 app.UseMiddleware<JwtMiddleware>();
