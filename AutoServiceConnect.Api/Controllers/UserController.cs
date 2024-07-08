@@ -1,12 +1,15 @@
 using System.Security.Authentication;
+using AutoServiceConnect.Api.CustomAttributes;
 using AutoServiceConnect.Api.Database.Models;
 using AutoServiceConnect.Api.Services;
 using AutoServiceConnect.Api.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
-namespace AutoServiceConnect.Api;
+namespace AutoServiceConnect.Api.Controllers;
 
+[ApiController]
+[Route("[controller]")]
 public class UserController: ControllerBase
 {
     private readonly UserService _userService;
@@ -25,7 +28,6 @@ public class UserController: ControllerBase
         return Created($"{Request.Host}/student/{userId.ToString()}", request);
     }
     
-    [Authorize]
     [HttpGet("auth-me")]
     public async Task<ActionResult<LoginUserResponse>> GetUserInfo()
     {
@@ -56,7 +58,8 @@ public class UserController: ControllerBase
         return Ok(result);
     }
     
-    [Authorize]
+    
+    [AuthorizeRoles([Role.Admin,Role.AutoService])]
     [HttpPost("test")]
     public async Task<ActionResult<LoginUserResponse>> Test()
     {

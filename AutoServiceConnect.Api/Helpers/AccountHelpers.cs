@@ -26,25 +26,4 @@ public static class AccountHelpers
     {
         return Regex.IsMatch(password, Constants.Regex.Password);
     }
-
-    public static string GenerateToken(string jwtSecret, int jwtExpiryDays, string profileId)
-    {
-        var tokenHandler = new JwtSecurityTokenHandler();
-        var key = Encoding.ASCII.GetBytes(jwtSecret);
-        var tokenDescriptor = new SecurityTokenDescriptor
-        {
-            Subject = new ClaimsIdentity(new []
-            {
-                new Claim("UserId", profileId),
-            }),
-            Expires = DateTime.UtcNow.AddDays(jwtExpiryDays),
-            SigningCredentials = new SigningCredentials
-            (
-                new SymmetricSecurityKey(key),
-                SecurityAlgorithms.HmacSha256Signature
-            )
-        };
-
-        return tokenHandler.WriteToken(tokenHandler.CreateToken(tokenDescriptor));
-    }
 }

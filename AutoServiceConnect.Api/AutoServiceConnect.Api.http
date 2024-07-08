@@ -1,6 +1,29 @@
 @AutoServiceConnect.Api_HostAddress = http://localhost:5027
 
-GET {{AutoServiceConnect.Api_HostAddress}}/weatherforecast/
-Accept: application/json
+
+POST {{AutoServiceConnect.Api_HostAddress}}/user/register
+Content-Type: application/json
+
+{
+  "email": "valeriu3333@gmail.com",
+  "password": "CaraC@ctus47"
+}
 
 ###
+
+POST {{AutoServiceConnect.Api_HostAddress}}/user/login
+Content-Type: application/json
+
+{
+  "email": "valeriu3333@gmail.com",
+  "password": "CaraC@ctus47"
+}
+
+###
+
+POST {{AutoServiceConnect.Api_HostAddress}}/user/test
+Accept: application/json
+Authorization: bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjMiLCJuYmYiOjE3MjAzOTgwNDksImV4cCI6MTcyMTAwMjg0OSwiaWF0IjoxNzIwMzk4MDQ5fQ.f6n-Id2q1lkOMa4AIk2_FpFXKW4GCnuCtTl3d90jz0I
+
+###
+

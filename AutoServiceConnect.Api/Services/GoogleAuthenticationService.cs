@@ -2,6 +2,7 @@ using System.Security.Authentication;
 using AutoServiceConnect.Api.Database;
 using AutoServiceConnect.Api.Database.Models;
 using AutoServiceConnect.Api.Services.Models;
+using AutoServiceConnect.Api.Utils;
 using Google.Apis.Auth;
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Auth.OAuth2.Flows;
@@ -13,11 +14,16 @@ public class GoogleAuthenticationService
 {
     private readonly AppSettings _appSettings;
     private readonly AutoServiceDbContext _autoServiceDbContext;
+    private readonly IJwtUtils _jwtUtils;
 
-    public GoogleAuthenticationService(AppSettings appSettings, AutoServiceDbContext autoServiceDbContext)
+    public GoogleAuthenticationService(
+        AppSettings appSettings, 
+        AutoServiceDbContext autoServiceDbContext, 
+        IJwtUtils jwtUtils)
     {
         _appSettings = appSettings;
         _autoServiceDbContext = autoServiceDbContext;
+        _jwtUtils = jwtUtils;
     }
     
     public async Task<string> VerifyToken(string code)
@@ -71,8 +77,7 @@ public class GoogleAuthenticationService
 
         await _autoServiceDbContext.SaveChangesAsync();
         
-        var token = Helpers.AccountHelpers.GenerateToken(_appSettings.JwtSecret, _appSettings.JwtExpiryDays,
-            dbUser.Id.ToString());
+        var token = _jwtUtils.GenerateJwtToken(dbUser);
 
         return new GoogleTokenResponse { Token = token, Email = dbUser.Email};
     }

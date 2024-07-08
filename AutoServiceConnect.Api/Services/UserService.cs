@@ -3,6 +3,7 @@ using System.Text;
 using AutoServiceConnect.Api.Database;
 using AutoServiceConnect.Api.Database.Models;
 using AutoServiceConnect.Api.Helpers;
+using AutoServiceConnect.Api.Utils;
 using AutoServiceConnect.Api.ViewModels;
 using Microsoft.EntityFrameworkCore;
 
@@ -12,11 +13,16 @@ public class UserService
 {
     private readonly AutoServiceDbContext _autoServiceDbContext;
     private readonly AppSettings _appSettings;
+    private readonly IJwtUtils _jwtUtils;
 
-    public UserService(AutoServiceDbContext autoServiceDbContext, AppSettings appSettings)
+    public UserService(
+        AutoServiceDbContext autoServiceDbContext, 
+        AppSettings appSettings,
+        IJwtUtils jwtUtils)
     {
         _autoServiceDbContext = autoServiceDbContext;
         _appSettings = appSettings;
+        _jwtUtils = jwtUtils;
     }
     
     public async Task<int> RegisterUser(string email, string password)
@@ -51,7 +57,7 @@ public class UserService
         return newUser.Id;
     }
 
-    public async Task<User> GetUserById(int userId)
+    public async Task<User?> GetUserById(int userId)
     {
         return await _autoServiceDbContext.Users.FirstOrDefaultAsync(u => u.Id == userId);
     }
@@ -82,8 +88,7 @@ public class UserService
             throw new AuthenticationException();
         }
 
-        var token = AccountHelpers.GenerateToken(_appSettings.JwtSecret, _appSettings.JwtExpiryDays,
-            profileFromDb.Id.ToString());
+        var token = _jwtUtils.GenerateJwtToken(profileFromDb);
 
         return new LoginUserResponse{Email = profileFromDb.Email, Token = token};
     }

@@ -3,6 +3,7 @@ using System;
 using AutoServiceConnect.Api.Database;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,9 +11,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace AutoServiceConnect.Api.Migrations
 {
     [DbContext(typeof(AutoServiceDbContext))]
-    partial class AutoServiceDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240616022303_Add AutoService")]
+    partial class AddAutoService
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "8.0.6");
@@ -46,7 +49,7 @@ namespace AutoServiceConnect.Api.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Appointments");
+                    b.ToTable("Appointment");
                 });
 
             modelBuilder.Entity("AutoServiceConnect.Api.Database.Models.AutoService", b =>
@@ -77,7 +80,7 @@ namespace AutoServiceConnect.Api.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("AutoServices");
+                    b.ToTable("AutoService");
                 });
 
             modelBuilder.Entity("AutoServiceConnect.Api.Database.Models.Status", b =>
@@ -113,9 +116,6 @@ namespace AutoServiceConnect.Api.Migrations
 
                     b.Property<byte[]>("PasswordSalt")
                         .HasColumnType("BLOB");
-
-                    b.Property<int>("Role")
-                        .HasColumnType("INTEGER");
 
                     b.HasKey("Id");
 
