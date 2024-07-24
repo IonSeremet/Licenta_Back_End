@@ -62,7 +62,7 @@ public class UserService
         return await _autoServiceDbContext.Users.FirstOrDefaultAsync(u => u.Id == userId);
     }
 
-    public async Task<LoginUserResponse> Login(string email, string password)
+    public async Task<(User, string)> Login(string email, string password)
     {
         var profileFromDb = await _autoServiceDbContext.Users
             .FirstOrDefaultAsync(u => u.Email == email);
@@ -90,7 +90,7 @@ public class UserService
 
         var token = _jwtUtils.GenerateJwtToken(profileFromDb);
 
-        return new LoginUserResponse{Email = profileFromDb.Email, Token = token};
+        return (profileFromDb, token);
     }
     
     private static bool VerifyPasswordHash(string password,

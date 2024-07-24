@@ -3,7 +3,6 @@ using AutoServiceConnect.Api.CustomAttributes;
 using AutoServiceConnect.Api.Database.Models;
 using AutoServiceConnect.Api.Services;
 using AutoServiceConnect.Api.ViewModels;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace AutoServiceConnect.Api.Controllers;
@@ -59,10 +58,10 @@ public class UserController: ControllerBase
     }
     
     
-    [AuthorizeRoles([Role.Admin,Role.AutoService])]
-    [HttpPost("test")]
-    public async Task<ActionResult<LoginUserResponse>> Test()
-    {
-        return Ok();
-    } 
+    // [AuthorizeRoles([Role.Admin,Role.AutoServiceManager])]
+    // [HttpPost("test")]
+    // public async Task<ActionResult<LoginUserResponse>> Test()
+    // {
+    //     return Ok();
+    // } 
 }

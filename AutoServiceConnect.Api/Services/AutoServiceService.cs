@@ -1,16 +1,27 @@
 using AutoServiceConnect.Api.Database;
 using AutoServiceConnect.Api.Database.Models;
+using AutoServiceConnect.Api.Services.Models;
+using AutoServiceConnect.Api.ViewModels;
 using AutoServiceConnect.Api.ViewModels.AutoService;
+using Microsoft.AspNetCore.Identity.Data;
+using Microsoft.EntityFrameworkCore;
 
 namespace AutoServiceConnect.Api.Services;
 
 public class AutoServiceService
 {
     private readonly AutoServiceDbContext _autoServiceDbContext;
+    private readonly UserService _userService;
+    private readonly AutoServiceDbContext _dbContext;
 
-    public AutoServiceService(AutoServiceDbContext autoServiceDbContext)
+    public AutoServiceService(
+        AutoServiceDbContext autoServiceDbContext, 
+        UserService userService,
+        AutoServiceDbContext dbContext)
     {
         _autoServiceDbContext = autoServiceDbContext;
+        _userService = userService;
+        _dbContext = dbContext;
     }
 
     public Task CreateAutoService(CreateAutoServiceRequest createAutoServiceRequest)
@@ -47,7 +58,7 @@ public class AutoServiceService
     {
         var autoServiceToUpdate = new AutoService()
         {
-            Id = autoServiceId,
+            AutoServiceId = autoServiceId,
             Name = createAutoServiceRequest.Name,
             Description = createAutoServiceRequest.Description,
             Address = createAutoServiceRequest.Address,
@@ -58,5 +69,24 @@ public class AutoServiceService
         var updatedAutoService = _autoServiceDbContext.AutoServices.Update(autoServiceToUpdate);
         await _autoServiceDbContext.SaveChangesAsync();
         return updatedAutoService.Entity;
+    }
+    
+    public async Task<LoginAutoServiceResponse> AutoServiceLogin(RegisterLoginUserRequest request)
+    {
+        var (user, token) = await _userService.Login(request.Email, request.Password);
+        AutoService autoservice = null;
+        if (user.Role == Role.Customer)
+            autoservice = await _dbContext.AutoServices.FirstOrDefaultAsync(u => u.AutoServiceId == user.Id);
+        else
+            throw new UnauthorizedAccessException();
+        return new LoginAutoServiceResponse
+        {
+            ContactEmail = user.Email,
+            Address = autoservice.Address,
+            Name = autoservice.Name,
+            MapCoordinates = autoservice.MapCoordinates,
+            Token = token,
+            PhoneNumber = autoservice.PhoneNumber
+        };
     }
 }

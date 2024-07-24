@@ -4,6 +4,7 @@ using AutoServiceConnect.Api.Database;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace AutoServiceConnect.Api.Migrations
 {
     [DbContext(typeof(AutoServiceDbContext))]
-    partial class AutoServiceDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240724171818_Add Users AutoServices and Appointments")]
+    partial class AddUsersAutoServicesandAppointments
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -106,15 +109,10 @@ namespace AutoServiceConnect.Api.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ServiceManagerId"));
 
-                    b.Property<int>("AutoServiceId")
-                        .HasColumnType("int");
-
                     b.Property<int>("UserId")
                         .HasColumnType("int");
 
                     b.HasKey("ServiceManagerId");
-
-                    b.HasIndex("AutoServiceId");
 
                     b.HasIndex("UserId")
                         .IsUnique();
@@ -284,19 +282,11 @@ namespace AutoServiceConnect.Api.Migrations
 
             modelBuilder.Entity("AutoServiceConnect.Api.Database.Models.AutoServiceManager", b =>
                 {
-                    b.HasOne("AutoServiceConnect.Api.Database.Models.AutoService", "AutoService")
-                        .WithMany()
-                        .HasForeignKey("AutoServiceId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.HasOne("AutoServiceConnect.Api.Database.Models.User", "User")
                         .WithOne("ServiceManager")
                         .HasForeignKey("AutoServiceConnect.Api.Database.Models.AutoServiceManager", "UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.Navigation("AutoService");
 
                     b.Navigation("User");
                 });
