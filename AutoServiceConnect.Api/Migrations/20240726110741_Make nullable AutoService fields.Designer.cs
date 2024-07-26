@@ -4,6 +4,7 @@ using AutoServiceConnect.Api.Database;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace AutoServiceConnect.Api.Migrations
 {
     [DbContext(typeof(AutoServiceDbContext))]
-    partial class AutoServiceDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240726110741_Make nullable AutoService fields")]
+    partial class MakenullableAutoServicefields
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -104,7 +107,7 @@ namespace AutoServiceConnect.Api.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ServiceManagerId"));
 
-                    b.Property<int?>("AutoServiceId")
+                    b.Property<int>("AutoServiceId")
                         .HasColumnType("int");
 
                     b.Property<int>("UserId")
@@ -182,7 +185,7 @@ namespace AutoServiceConnect.Api.Migrations
 
                     b.HasIndex("CustomerId");
 
-                    b.ToTable("Cars");
+                    b.ToTable("Car");
                 });
 
             modelBuilder.Entity("AutoServiceConnect.Api.Database.Models.Customer", b =>
@@ -300,7 +303,9 @@ namespace AutoServiceConnect.Api.Migrations
                 {
                     b.HasOne("AutoServiceConnect.Api.Database.Models.AutoService", "AutoService")
                         .WithMany()
-                        .HasForeignKey("AutoServiceId");
+                        .HasForeignKey("AutoServiceId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.HasOne("AutoServiceConnect.Api.Database.Models.User", "User")
                         .WithOne("ServiceManager")
