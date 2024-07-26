@@ -9,6 +9,6 @@ public class AutoServiceManager
     [Key]
     public int ServiceManagerId { get; set; }
 
-    public AutoService AutoService { get; set; }
-    public int AutoServiceId { get; set; }
+    public AutoService? AutoService { get; set; }
+    public int? AutoServiceId { get; set; }
 }

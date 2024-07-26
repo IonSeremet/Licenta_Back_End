@@ -10,6 +10,7 @@ public class AutoServiceDbContext(DbContextOptions<AutoServiceDbContext> options
     public DbSet<AutoService> AutoServices { get; set; }
     public DbSet<Customer> Customers { get; set; }
     public DbSet<AutoServiceManager> AutoServiceManagers { get; set; }
+    public DbSet<Car> Cars { get; set; }
     
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

@@ -52,7 +52,17 @@ public class UserService
             PasswordHash = passwordHash,
             PasswordSalt = passwordSalt
         };
-        _autoServiceDbContext.Users.Add(newUser);
+        var addedUser = _autoServiceDbContext.Users.Add(newUser).Entity;
+        var newCustomer = new Customer()
+        {
+            UserId = addedUser.Id
+        };
+        var newAutoserviceManager = new AutoServiceManager()
+        {
+            UserId = addedUser.Id
+        };
+        _autoServiceDbContext.Customers.Add(newCustomer);
+        _autoServiceDbContext.AutoServiceManagers.Add(newAutoserviceManager);
         await _autoServiceDbContext.SaveChangesAsync();
         return newUser.Id;
     }
@@ -85,7 +95,7 @@ public class UserService
             //     _profileRepository.LockProfile(profileFromDb.Email);
             //     throw new DomainModelException("Account locked");
             // }
-            throw new AuthenticationException();
+            throw new AuthenticationException("Wrong username or password");
         }
 
         var token = _jwtUtils.GenerateJwtToken(profileFromDb);

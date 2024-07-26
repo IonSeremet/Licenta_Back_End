@@ -58,6 +58,7 @@ builder.Services.AddScoped<UserService>();
 builder.Services.AddScoped<CustomerService>();
 builder.Services.AddScoped<GoogleAuthenticationService>();
 builder.Services.AddScoped<AutoServiceService>();
+builder.Services.AddScoped<CarService>();
 builder.Services.AddScoped<IJwtUtils, JwtUtils>();
 builder.Services.AddCors();
 

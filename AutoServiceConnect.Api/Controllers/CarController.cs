@@ -1,5 +1,7 @@
+using System.Security.Authentication;
 using AutoServiceConnect.Api.CustomAttributes;
 using AutoServiceConnect.Api.Database.Models;
+using AutoServiceConnect.Api.Services;
 using AutoServiceConnect.Api.ViewModels.Car;
 using AutoServiceConnect.Api.ViewModels.ServiceAppointment;
 using Microsoft.AspNetCore.Mvc;
@@ -10,12 +12,20 @@ namespace AutoServiceConnect.Api.Controllers;
 [Route("[controller]")]
 public class CarController : ControllerBase
 {
-    [AuthorizeRoles()]
+    private readonly CarService _carService;
+
+    public CarController(CarService carService)
+    {
+        _carService = carService;
+    }
+    
+    [AuthorizeRoles(Role.Customer)]
     [HttpPost]
     public async Task<IActionResult> AddCar(
         [FromBody] CarRequest car)
     {
-        // await _autoServiceService.CreateAutoService(request);
+        var userId = ((User) (HttpContext.Items["User"] ?? throw new AuthenticationException())).Id;
+        await _carService.AddCar(car, userId);
         return Created(); // TODO: Add created link
     }
 
