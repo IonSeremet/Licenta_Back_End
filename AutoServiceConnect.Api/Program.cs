@@ -25,6 +25,7 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddDbContext<AutoServiceDbContext>(options =>
     options.UseSqlServer(appSettings.SqlConnectionString));
 builder.Services.AddScoped<UserService>();
+builder.Services.AddScoped<CustomerService>();
 builder.Services.AddScoped<GoogleAuthenticationService>();
 builder.Services.AddScoped<AutoServiceService>();
 builder.Services.AddScoped<IJwtUtils, JwtUtils>();

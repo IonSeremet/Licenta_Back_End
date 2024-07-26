@@ -49,13 +49,6 @@ public class UserController: ControllerBase
         
         return Ok(new LoginUserResponse{Email = response.Email, Token = response.Token});
     }
-        
-    [HttpPost("login")]
-    public async Task<ActionResult<LoginUserResponse>> LoginUser([FromBody] RegisterLoginUserRequest request)
-    {
-        var result = await _userService.Login(request.Email, request.Password);
-        return Ok(result);
-    }
     
     
     // [AuthorizeRoles([Role.Admin,Role.AutoServiceManager])]

@@ -32,7 +32,8 @@ public class AutoServiceService
             Description = createAutoServiceRequest.Description,
             Address = createAutoServiceRequest.Address,
             MapCoordinates = createAutoServiceRequest.MapCoordinates,
-            Rating = createAutoServiceRequest.Rating
+            Rating = createAutoServiceRequest.Rating,
+            ImageLink = createAutoServiceRequest.ImageLink
         });
         return _autoServiceDbContext.SaveChangesAsync();
     }
@@ -75,18 +76,18 @@ public class AutoServiceService
     {
         var (user, token) = await _userService.Login(request.Email, request.Password);
         AutoService autoservice = null;
-        if (user.Role == Role.Customer)
+        if (user.Role == Role.AutoServiceManager)
             autoservice = await _dbContext.AutoServices.FirstOrDefaultAsync(u => u.AutoServiceId == user.Id);
         else
             throw new UnauthorizedAccessException();
         return new LoginAutoServiceResponse
         {
             ContactEmail = user.Email,
-            Address = autoservice.Address,
-            Name = autoservice.Name,
-            MapCoordinates = autoservice.MapCoordinates,
+            Address = autoservice?.Address ?? "",
+            Name = autoservice?.Name ?? "",
+            MapCoordinates = autoservice?.MapCoordinates ?? "",
             Token = token,
-            PhoneNumber = autoservice.PhoneNumber
+            PhoneNumber = autoservice?.PhoneNumber ?? ""
         };
     }
 }

@@ -7,4 +7,5 @@ public class CreateAutoServiceRequest
     public string Address { get; set; }
     public string MapCoordinates { get; set; }
     public string Rating { get; set; }
+    public string ImageLink { get; set; }
 }

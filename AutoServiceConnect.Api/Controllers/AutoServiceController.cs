@@ -19,12 +19,12 @@ public class AutoServiceController: ControllerBase
         _autoServiceService = autoServiceService;
     }
     
-    [AuthorizeRoles([Role.Admin])]
+    [AuthorizeRoles([Role.Admin, Role.AutoServiceManager])]
     [HttpPost]
     public async Task<IActionResult> CreateAutoService(CreateAutoServiceRequest request)
     {
         await _autoServiceService.CreateAutoService(request);
-        return Created();// TODO: Add created link
+        return Created();
     }
     
     [AuthorizeRoles([Role.Admin,Role.AutoServiceManager])]
@@ -32,7 +32,7 @@ public class AutoServiceController: ControllerBase
     public async Task<IActionResult> UpdateAutoService(CreateAutoServiceRequest request)
     {
         await _autoServiceService.CreateAutoService(request);
-        return Created();// TODO: Add created link
+        return Created();
     }
 
     [HttpGet("{id}")]

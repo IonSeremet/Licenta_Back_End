@@ -17,7 +17,7 @@ public class CustomerController: ControllerBase
         _customerService = customerService;
     }
     
-    [HttpPut("login")]
+    [HttpPut("update-info")]
     public async Task<LoginCustomerResponse> UpdateInfo([FromBody] RegisterLoginUserRequest request)
     {
         var result = await _customerService.CustomerLogin(request);
