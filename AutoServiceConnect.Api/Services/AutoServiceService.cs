@@ -32,6 +32,7 @@ public class AutoServiceService
             Description = createAutoServiceRequest.Description,
             Address = createAutoServiceRequest.Address,
             MapCoordinates = createAutoServiceRequest.MapCoordinates,
+            PhoneNumber =  createAutoServiceRequest.PhoneNumber,
             Rating = createAutoServiceRequest.Rating,
             ImageLink = createAutoServiceRequest.ImageLink
         });
