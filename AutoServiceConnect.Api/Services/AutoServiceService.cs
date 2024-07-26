@@ -49,10 +49,9 @@ public class AutoServiceService
         throw new NotImplementedException();
     }
     
-    public Task<IEnumerable<AutoService?>> GetAutoServicesByProximity(string address)
+    public async Task<IEnumerable<AutoService?>> GetAutoServicesByProximity(float? longitude, float? latitude)
     {
-        // TODO: Connect Google maps API ?
-        throw new NotImplementedException();
+        return _autoServiceDbContext.AutoServices;
     }
     
     public async Task<AutoService> UpdateAutoService(int autoServiceId, CreateAutoServiceRequest createAutoServiceRequest)

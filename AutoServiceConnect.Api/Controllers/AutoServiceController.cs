@@ -38,12 +38,23 @@ public class AutoServiceController: ControllerBase
     [HttpGet("{id}")]
     public async Task<AutoService> GetAutoService(int id)
     {
-        return await _autoServiceService.GetAutoServiceById(id);
+        // return await _autoServiceService.GetAutoServiceById(id);
+        return new AutoService()
+        {
+            Name = "Auto Repair",
+            Description =
+                "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam facilisis dolor in vehicula finibus. Phasellus dapibus, velit at laoreet bibendum, nibh nisi sollicitudin neque, in maximus lectus massa non nulla. Phasellus ornare nisl vitae erat lobortis pellentesque. Curabitur a velit eget augue euismod sagittis id et purus.",
+            Address = "Timisoara str. Timeoclului 1",
+            MapCoordinates = "47.019974, 28.833351",
+            Rating = "10",
+            ImageLink =
+                "https://cdn.vectorstock.com/i/500p/57/48/auto-repair-service-logo-badge-emblem-template-vector-49765748.jpg"
+        };
     }
     
     [HttpGet()] //47.010453,28.86381
-    public async Task<IEnumerable<AutoService>> GetAutoServicesInProximity(int id, [FromQuery] float? longitude, [FromQuery] float? latitude)
+    public async Task<IEnumerable<AutoService?>> GetAutoServicesInProximity([FromQuery] float? longitude, [FromQuery] float? latitude)
     {
-        return [await _autoServiceService.GetAutoServiceById(id)];
+        return await _autoServiceService.GetAutoServicesByProximity(longitude, latitude);
     }
 }
