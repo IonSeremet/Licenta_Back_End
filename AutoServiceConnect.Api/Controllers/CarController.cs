@@ -64,7 +64,7 @@ public class CarController : ControllerBase
 
     // [AuthorizeRoles()]
     [HttpGet("user/{userId}")]
-    public async Task<IEnumerable<CarResponse>> GetCarsOfUser(
+    public IEnumerable<Car> GetCarsOfUser(
         [FromRoute] int userId)
     {
         var cars =
@@ -206,7 +206,8 @@ public class CarController : ControllerBase
                     " Dolor labore lorem no accusam sit justo sadipscing labore invidunt voluptua, amet duo et gubergren vero gubergren dolor. At diam. Dolor labore lorem no accusam sit justo sadipscing labore invidunt voluptua, amet duo et gubergren vero gubergren dolor. At diam.",
             }
         };
-        return cars;
+        
+        return _carService.GetCarsOfCustomer(userId);
     }
 
     [AuthorizeRoles([Role.Customer])]
