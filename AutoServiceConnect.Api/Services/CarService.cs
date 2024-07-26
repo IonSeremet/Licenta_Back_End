@@ -38,7 +38,7 @@ public class CarService
         await _context.SaveChangesAsync();
     }
 
-    public IEnumerable<Car> GetCarsOfCustomer(int customerId)
+    public IEnumerable<Car> GetCarsOfCustomer(int? customerId)
     {
         return _context.Cars.Where(c => c.CustomerId == customerId);
     }

@@ -65,7 +65,7 @@ public class CarController : ControllerBase
     // [AuthorizeRoles()]
     [HttpGet("user/{userId}")]
     public IEnumerable<Car> GetCarsOfUser(
-        [FromRoute] int userId)
+        [FromRoute] int? userId)
     {
         var cars =
         new List<CarResponse>
@@ -206,6 +206,7 @@ public class CarController : ControllerBase
                     " Dolor labore lorem no accusam sit justo sadipscing labore invidunt voluptua, amet duo et gubergren vero gubergren dolor. At diam. Dolor labore lorem no accusam sit justo sadipscing labore invidunt voluptua, amet duo et gubergren vero gubergren dolor. At diam.",
             }
         };
+        userId ??= ((User) (HttpContext.Items["User"] ?? throw new AuthenticationException())).Id;
         
         return _carService.GetCarsOfCustomer(userId);
     }
