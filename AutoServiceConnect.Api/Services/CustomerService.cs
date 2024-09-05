@@ -26,6 +26,7 @@ public class CustomerService
             throw new UnauthorizedAccessException();
         return new LoginCustomerResponse
         {
+            UserId = user.Id,
             Email = user.Email,
             ContactInformation = customer?.ContactInformation,
             Name = user.FullName,

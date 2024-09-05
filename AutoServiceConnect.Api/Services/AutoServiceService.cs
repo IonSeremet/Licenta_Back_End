@@ -75,13 +75,19 @@ public class AutoServiceService
     public async Task<LoginAutoServiceResponse> AutoServiceLogin(RegisterLoginUserRequest request)
     {
         var (user, token) = await _userService.Login(request.Email, request.Password);
-        AutoService autoservice = null;
+        AutoServiceManager autoServiceManager = null;
+        AutoService autoservice = null; 
         if (user.Role == Role.AutoServiceManager)
+        {
             autoservice = await _dbContext.AutoServices.FirstOrDefaultAsync(u => u.AutoServiceId == user.Id);
+            autoServiceManager =
+                await _dbContext.AutoServiceManagers.FirstOrDefaultAsync(u => u.ServiceManagerId == user.Id);
+        }
         else
             throw new UnauthorizedAccessException();
         return new LoginAutoServiceResponse
         {
+            UserId = user.Id,
             ContactEmail = user.Email,
             Address = autoservice?.Address ?? "",
             Name = autoservice?.Name ?? "",

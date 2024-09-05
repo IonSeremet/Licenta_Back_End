@@ -1,9 +1,11 @@
+using AutoServiceConnect.Api.ViewModels.Customer;
+
 namespace AutoServiceConnect.Api.ViewModels.Car;
 
 public class CarResponse
 {
     public int Id { get; set; }
-    public int CustomerId { get; set; }
+    public UpdateCustomerInfo Customer { get; set; }
     public string CarName { get; set; }
     public string? Brand { get; set; }
     public string Model { get; set; }

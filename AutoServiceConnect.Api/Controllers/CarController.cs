@@ -3,6 +3,7 @@ using AutoServiceConnect.Api.CustomAttributes;
 using AutoServiceConnect.Api.Database.Models;
 using AutoServiceConnect.Api.Services;
 using AutoServiceConnect.Api.ViewModels.Car;
+using AutoServiceConnect.Api.ViewModels.Customer;
 using AutoServiceConnect.Api.ViewModels.ServiceAppointment;
 using Microsoft.AspNetCore.Mvc;
 
@@ -64,7 +65,7 @@ public class CarController : ControllerBase
 
     // [AuthorizeRoles()]
     [HttpGet("user/{userId}")]
-    public IEnumerable<Car> GetCarsOfUser(
+    public IEnumerable<CarResponse> GetCarsOfUser(
         [FromRoute] int? userId)
     {
         var cars =
@@ -208,7 +209,28 @@ public class CarController : ControllerBase
         };
         userId ??= ((User) (HttpContext.Items["User"] ?? throw new AuthenticationException())).Id;
         
-        return _carService.GetCarsOfCustomer(userId);
+        return _carService.GetCarsOfCustomer(userId).Select(c => new CarResponse
+        {
+            Id = c.Id,
+            Customer = new UpdateCustomerInfo(){},
+            CarName = null,
+            Brand = null,
+            Model = null,
+            Year = null,
+            VIN = null,
+            LicencePlace = null,
+            Mileage = null,
+            Color = null,
+            EngineType = null,
+            Rating = null,
+            ImgUrl = null,
+            Price = 0,
+            Speed = null,
+            Gps = null,
+            SeatType = null,
+            Automatic = null,
+            Description = null
+        });
     }
 
     [AuthorizeRoles([Role.Customer])]

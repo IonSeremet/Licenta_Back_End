@@ -38,8 +38,9 @@ public class CarService
         await _context.SaveChangesAsync();
     }
 
-    public IEnumerable<Car> GetCarsOfCustomer(int? customerId)
+    public IEnumerable<Car> GetCarsOfCustomer(int? userId)
     {
-        return _context.Cars.Where(c => c.CustomerId == customerId);
+        var customer = _context.Customers.Single(c => c.UserId == userId);
+        return _context.Cars.Where(c => c.CustomerId == customer.CustomerId);
     }
 }
