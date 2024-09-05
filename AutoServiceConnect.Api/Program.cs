@@ -1,14 +1,11 @@
-using System.Reflection;
-using System.Text;
 using System.Text.Json.Serialization;
 using AutoServiceConnect.Api;
 using AutoServiceConnect.Api.Database;
 using AutoServiceConnect.Api.Middlewares;
 using AutoServiceConnect.Api.Services;
 using AutoServiceConnect.Api.Utils;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.IdentityModel.Tokens;
+using Microsoft.OpenApi.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllers().AddJsonOptions(x =>
@@ -25,52 +22,49 @@ var appSettings = new AppSettings();
 builder.Configuration.Bind(appSettings);
 builder.Services.AddSingleton(appSettings);
 
-// builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
-builder.Services.AddDbContext<AutoServiceDbContext>(options => 
-    options.UseSqlite($"Data Source={dbPath}"));
+builder.Services.AddSwaggerGen(c =>
+{
+    c.SwaggerDoc("v1", new OpenApiInfo { Title = "Auto Service Management", Version = "v1" }); 
+    c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+    {
+        Description = "JWT Authorization header using the Bearer scheme. Example: \"Authorization: Bearer {token}\"",
+        Name = "Authorization",
+        In = ParameterLocation.Header,
+        Type = SecuritySchemeType.ApiKey,
+        Scheme = "Bearer"
+    });
+    c.AddSecurityRequirement(new OpenApiSecurityRequirement()
+    {
+        {
+            new OpenApiSecurityScheme
+            {
+                Reference = new OpenApiReference
+                {
+                    Type = ReferenceType.SecurityScheme,
+                    Id = "Bearer"
+                },
+                Scheme = "oauth2",
+                Name = "Bearer",
+                In = ParameterLocation.Header,
+
+            },
+            new List<string>()
+        }
+    });
+});
+builder.Services.AddDbContext<AutoServiceDbContext>(options =>
+    options.UseSqlServer(appSettings.SqlConnectionString)
+        .LogTo(Console.WriteLine, LogLevel.Information)
+    );
 builder.Services.AddScoped<UserService>();
+builder.Services.AddScoped<CustomerService>();
 builder.Services.AddScoped<GoogleAuthenticationService>();
 builder.Services.AddScoped<AutoServiceService>();
+builder.Services.AddScoped<CarService>();
 builder.Services.AddScoped<IJwtUtils, JwtUtils>();
 builder.Services.AddCors();
-// builder.Services.AddAuthentication(x =>
-//     {
-//         x.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-//         x.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-//     })
-//     .AddJwtBearer(x =>
-//     {
-//         x.Events = new JwtBearerEvents
-//         {
-//             OnTokenValidated = async context =>
-//             {
-//                 var userService = context.HttpContext.RequestServices.GetRequiredService<UserService>();
-//                 var userId = context.Principal?.Claims.FirstOrDefault(claim => claim.Type == "UserId")?.Value;
-//                 if (userId == null)
-//                     context.Fail("Unauthorized");
-//                 var userExists = await userService.GetUserById(Int32.Parse(userId!));
-//                 if (userExists == null)
-//                     context.Fail("Unauthorized");
-//             }
-//         };
-//         x.RequireHttpsMetadata = false;
-//         x.SaveToken = true;
-//         x.TokenValidationParameters = new TokenValidationParameters
-//         {
-//             ValidateIssuerSigningKey = true,
-//             IssuerSigningKey = new SymmetricSecurityKey(
-//                 Encoding.ASCII.GetBytes(appSettings.JwtSecret)),
-//             ValidateIssuer = false,
-//             ValidateAudience = false
-//         };
-//     });
-// builder.Services.AddAuthorization();
-
-
 
 var app = builder.Build();
-
 app.UseSwagger();
 app.UseSwaggerUI();
 

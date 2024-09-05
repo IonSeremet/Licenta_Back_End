@@ -52,7 +52,18 @@ public class UserService
             PasswordHash = passwordHash,
             PasswordSalt = passwordSalt
         };
-        _autoServiceDbContext.Users.Add(newUser);
+        var addedUser = _autoServiceDbContext.Users.Add(newUser).Entity;
+        await _autoServiceDbContext.SaveChangesAsync();
+        var newCustomer = new Customer()
+        {
+            UserId = addedUser.Id
+        };
+        var newAutoserviceManager = new AutoServiceManager()
+        {
+            UserId = addedUser.Id
+        };
+        _autoServiceDbContext.Customers.Add(newCustomer);
+        _autoServiceDbContext.AutoServiceManagers.Add(newAutoserviceManager);
         await _autoServiceDbContext.SaveChangesAsync();
         return newUser.Id;
     }
@@ -62,7 +73,7 @@ public class UserService
         return await _autoServiceDbContext.Users.FirstOrDefaultAsync(u => u.Id == userId);
     }
 
-    public async Task<LoginUserResponse> Login(string email, string password)
+    public async Task<(User, string)> Login(string email, string password)
     {
         var profileFromDb = await _autoServiceDbContext.Users
             .FirstOrDefaultAsync(u => u.Email == email);
@@ -85,12 +96,12 @@ public class UserService
             //     _profileRepository.LockProfile(profileFromDb.Email);
             //     throw new DomainModelException("Account locked");
             // }
-            throw new AuthenticationException();
+            throw new AuthenticationException("Wrong username or password");
         }
 
         var token = _jwtUtils.GenerateJwtToken(profileFromDb);
 
-        return new LoginUserResponse{Email = profileFromDb.Email, Token = token};
+        return (profileFromDb, token);
     }
     
     private static bool VerifyPasswordHash(string password,
