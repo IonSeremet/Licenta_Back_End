@@ -53,6 +53,7 @@ public class UserService
             PasswordSalt = passwordSalt
         };
         var addedUser = _autoServiceDbContext.Users.Add(newUser).Entity;
+        await _autoServiceDbContext.SaveChangesAsync();
         var newCustomer = new Customer()
         {
             UserId = addedUser.Id

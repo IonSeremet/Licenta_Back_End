@@ -53,7 +53,9 @@ builder.Services.AddSwaggerGen(c =>
     });
 });
 builder.Services.AddDbContext<AutoServiceDbContext>(options =>
-    options.UseSqlServer(appSettings.SqlConnectionString));
+    options.UseSqlServer(appSettings.SqlConnectionString)
+        .LogTo(Console.WriteLine, LogLevel.Information)
+    );
 builder.Services.AddScoped<UserService>();
 builder.Services.AddScoped<CustomerService>();
 builder.Services.AddScoped<GoogleAuthenticationService>();
